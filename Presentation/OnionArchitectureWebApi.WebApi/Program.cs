@@ -1,3 +1,5 @@
+using OnionArchitectureWebAPI.Persistance;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,6 +16,9 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
+
+// Add Layers
+builder.Services.AddPersistance(builder.Configuration);
 
 var app = builder.Build();
 

@@ -26,7 +26,7 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
                     CreatedDate = DateTime.Now,
                     IsDeleted = false
                 }).ToList();
-            var deletedBrands = Enumerable.Range(10, 15).Select(i =>
+            var deletedBrands = Enumerable.Range(11, 5).Select(i =>
                 new Brand
                 {
                     Id = i,
@@ -34,7 +34,7 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
                     CreatedDate = DateTime.Now,
                     IsDeleted = true
                 }).ToList();
-            builder.HasData(brands, deletedBrands);
+            builder.HasData(brands.Concat(deletedBrands));
         }
     }
 }
