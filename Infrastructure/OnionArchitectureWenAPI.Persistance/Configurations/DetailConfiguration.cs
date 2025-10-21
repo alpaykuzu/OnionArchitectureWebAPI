@@ -19,9 +19,9 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
             builder.Property(d => d.CategoryId).IsRequired();
 
             // Seed Data
-            Faker faker = new("tr");    
-            builder.HasData(
-                Enumerable.Range(1, 20).Select(i =>
+            Faker faker = new("tr");  
+            
+            var details = Enumerable.Range(1, 20).Select(i =>
                     new Detail
                     {
                         Id = i,
@@ -30,8 +30,9 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
                         CategoryId = faker.Random.Int(1, 4),
                         CreatedDate = DateTime.Now,
                         IsDeleted = false
-                    }).ToList(),
-                Enumerable.Range(20, 30).Select(i =>
+                    }).ToList();
+
+            var deletedDetails = Enumerable.Range(21, 5).Select(i =>
                     new Detail
                     {
                         Id = i,
@@ -40,8 +41,9 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
                         CategoryId = faker.Random.Int(1, 4),
                         CreatedDate = DateTime.Now,
                         IsDeleted = true
-                    }).ToList()
-            );
+                    }).ToList();
+
+            builder.HasData(details.Concat(deletedDetails));
         }
     }
 }

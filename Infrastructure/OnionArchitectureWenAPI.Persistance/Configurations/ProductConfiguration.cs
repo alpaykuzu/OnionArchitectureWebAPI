@@ -22,8 +22,8 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
 
             //Seed data
             Faker faker = new("tr");
-            builder.HasData(
-                Enumerable.Range(1, 50).Select(i =>
+
+            var products = Enumerable.Range(1, 50).Select(i =>
                     new Product
                     {
                         Id = i,
@@ -34,8 +34,9 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
                         Discount = decimal.Parse(faker.Commerce.Price(0, 300)),
                         CreatedDate = DateTime.Now,
                         IsDeleted = false
-                    }).ToList(),
-                Enumerable.Range(50, 70).Select(i =>
+                    }).ToList();
+
+            var deletedProducts = Enumerable.Range(51, 20).Select(i =>
                     new Product
                     {
                         Id = i,
@@ -46,8 +47,9 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
                         Discount = decimal.Parse(faker.Commerce.Price(0, 300)),
                         CreatedDate = DateTime.Now,
                         IsDeleted = true
-                    }).ToList()
-            );
+                    }).ToList();
+
+            builder.HasData(products.Concat(deletedProducts));
         }
     }
 }
