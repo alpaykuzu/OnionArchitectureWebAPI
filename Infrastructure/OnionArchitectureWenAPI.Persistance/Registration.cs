@@ -20,6 +20,7 @@ namespace OnionArchitectureWebAPI.Persistance
                 options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
 
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+            services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
         }
     }
 }
