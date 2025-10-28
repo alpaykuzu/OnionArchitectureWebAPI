@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\OnionArchitectureWenAPI.Application\OnionArchitectureWebAPI.Application.csproj" />
     <ProjectReference Include="..\..\Core\OnionArchitectureWenAPI.Domain\OnionArchitectureWebAPI.Domain.csproj" />
   </ItemGroup>
 
