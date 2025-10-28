@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\OnionArchitectureWenAPI.Persistance\OnionArchitectureWebAPI.Persistance.csproj" />
   </ItemGroup>
 

@@ -43,7 +43,7 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
                         Title = faker.Commerce.ProductName(),
                         Description = faker.Commerce.ProductDescription(),
                         BrandId = faker.Random.Int(1, 10),
-                        Price = decimal.Parse(faker.Commerce.Price(100, 10000)),
+                        Price = decimal.Parse(faker.Commerce.Price(500, 10000)),
                         Discount = decimal.Parse(faker.Commerce.Price(0, 300)),
                         CreatedDate = DateTime.Now,
                         IsDeleted = true
