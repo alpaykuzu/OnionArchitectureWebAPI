@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\OnionArchitectureWenAPI.Persistance\OnionArchitectureWebAPI.Persistance.csproj" />
+    <ProjectReference Include="..\..\OnionArchitectureWebAPI.Mapper\OnionArchitectureWebAPI.Mapper.csproj" />
   </ItemGroup>
 
 </Project>
