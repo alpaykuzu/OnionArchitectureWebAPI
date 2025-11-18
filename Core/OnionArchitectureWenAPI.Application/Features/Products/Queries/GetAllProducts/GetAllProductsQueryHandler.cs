@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OnionArchitectureWebAPI.Application.DTOs;
 using OnionArchitectureWebAPI.Application.Interfaces.AutoMapper;
@@ -30,7 +30,7 @@ namespace OnionArchitectureWebAPI.Application.Features.Products.Queries.GetAllPr
             mapper.Map<BrandDto, Brand>(new Brand());
             var map = mapper.Map<GetAllProductsQueryResponse, Product>(products);
             foreach (var item in map)
-                item.Price -= (item.Price * item.Discount) / 100;
+                item.Price -= (item.Price )  *  (item.Discount / 100);
 
             return map;
         }
