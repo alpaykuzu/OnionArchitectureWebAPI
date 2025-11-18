@@ -50,7 +50,7 @@ namespace OnionArchitectureWebAPI.Persistance.Configurations
                 {
                     Id = 4,
                     ParentId = 2,
-                    Name = "kadın",
+                    Name = "Kadın",
                     Priorty = 1,
                     CreatedDate = DateTime.Now,
                     IsDeleted = false
