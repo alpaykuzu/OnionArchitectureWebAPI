@@ -1,8 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using OnionArchitectureWebAPI.Application.Bases;
 using OnionArchitectureWebAPI.Application.Beheviors;
 using OnionArchitectureWebAPI.Application.Exceptions;
+using OnionArchitectureWebAPI.Application.Features.Products.Rules;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,6 +23,8 @@ namespace OnionArchitectureWebAPI.Application
 
             services.AddTransient<ExceptionMiddleware>();
 
+            services.AddRulesFromAssemblyContaining(assembly, typeof(BaseRules));
+
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
 
             // Fluent Validation
@@ -29,6 +33,17 @@ namespace OnionArchitectureWebAPI.Application
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidationBehevior<,>));
 
+        }
+
+        private static IServiceCollection AddRulesFromAssemblyContaining(this IServiceCollection services, Assembly assembly, Type type)
+        {
+            var types = assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(type) && type != t).ToList();
+            foreach (var item in types)
+            {
+                services.AddTransient(item);
+            }
+            return services;
         }
     }
 }
