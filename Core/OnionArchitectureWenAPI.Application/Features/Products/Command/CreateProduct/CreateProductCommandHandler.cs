@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OnionArchitectureWebAPI.Application.Features.Products.Command.CreateProduct
 {
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, Unit>
     {
         private readonly IUnitofWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace OnionArchitectureWebAPI.Application.Features.Products.Command.CreatePr
             _mapper = mapper;
         }
 
-        public async Task Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
             var product = _mapper.Map<Product, CreateProductCommandRequest>(request);
             await _unitOfWork.GetWriteRepository<Product>().AddAsync(product);
@@ -34,6 +34,7 @@ namespace OnionArchitectureWebAPI.Application.Features.Products.Command.CreatePr
                 }
                 await _unitOfWork.SaveChangesAsync();
             }
+            return Unit.Value;
         }
     }
 }
