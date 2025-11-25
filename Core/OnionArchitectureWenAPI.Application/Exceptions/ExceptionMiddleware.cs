@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using SendGrid.Helpers.Errors.Model;
-using System.ComponentModel.DataAnnotations;
 
 namespace OnionArchitectureWebAPI.Application.Exceptions
 {
@@ -22,6 +22,18 @@ namespace OnionArchitectureWebAPI.Application.Exceptions
             int statusCode = GetStatusCode(exception);
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = statusCode;
+
+            if(exception is ValidationException validationException)
+            {
+                List<string> validationErrors = validationException.Errors
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                return httpContext.Response.WriteAsync(new ExceptionModel
+                {
+                    StatusCode = statusCode,
+                    Errors = validationErrors
+                }.ToString());
+            }
 
             List<string> errors = new()
             {
