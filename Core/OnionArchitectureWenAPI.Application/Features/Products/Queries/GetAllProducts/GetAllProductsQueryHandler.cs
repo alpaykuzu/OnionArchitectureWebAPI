@@ -1,4 +1,4 @@
-﻿ using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using OnionArchitectureWebAPI.Application.DTOs;
 using OnionArchitectureWebAPI.Application.Interfaces.AutoMapper;
@@ -32,7 +32,8 @@ namespace OnionArchitectureWebAPI.Application.Features.Products.Queries.GetAllPr
             foreach (var item in map)
                 item.Price -= (item.Price )  *  (item.Discount / 100);
 
-            return map;
+            //return map;
+            throw new Exception("Test Exception Middleware");
         }
     }
 }

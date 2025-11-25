@@ -1,6 +1,7 @@
 using OnionArchitectureWebAPI.Persistance;
 using OnionArchitectureWebAPI.Application;
 using OnionArchitectureWebAPI.Mapper;
+using OnionArchitectureWebAPI.Application.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.ConfigureExceptionHandler();
 
 app.UseAuthorization();
 
