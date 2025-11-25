@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using OnionArchitectureWebAPI.Application.Features.Products.Rules;
 using OnionArchitectureWebAPI.Application.Interfaces.AutoMapper;
 using OnionArchitectureWebAPI.Application.Interfaces.UnitofWorks;
 using OnionArchitectureWebAPI.Domain.Entities;
@@ -14,15 +15,21 @@ namespace OnionArchitectureWebAPI.Application.Features.Products.Command.CreatePr
     {
         private readonly IUnitofWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ProductRules _productRules;
 
-        public CreateProductCommandHandler(IUnitofWork unitOfWork, IMapper mapper)
+        public CreateProductCommandHandler(IUnitofWork unitOfWork, IMapper mapper, ProductRules productRules)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _productRules = productRules;
         }
 
         public async Task<Unit> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
+            var existingProducts = await _unitOfWork.GetReadRepository<Product>()
+                .GetAllAsync();
+            await _productRules.ProductTitleMustNotBeSame(request.Title, existingProducts.Select(p => p.Title).ToList()); 
+
             var product = _mapper.Map<Product, CreateProductCommandRequest>(request);
             await _unitOfWork.GetWriteRepository<Product>().AddAsync(product);
             var result =  await _unitOfWork.SaveChangesAsync();

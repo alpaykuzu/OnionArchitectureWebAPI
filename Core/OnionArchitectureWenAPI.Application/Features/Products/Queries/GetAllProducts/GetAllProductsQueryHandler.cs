@@ -32,8 +32,7 @@ namespace OnionArchitectureWebAPI.Application.Features.Products.Queries.GetAllPr
             foreach (var item in map)
                 item.Price -= (item.Price )  *  (item.Discount / 100);
 
-            //return map;
-            throw new Exception("Test Exception Middleware");
+            return map;
         }
     }
 }
