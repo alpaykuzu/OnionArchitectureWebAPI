@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnionArchitectureWebAPI.Application.Interfaces.Repositories;
 using OnionArchitectureWebAPI.Application.Interfaces.UnitofWorks;
+using OnionArchitectureWebAPI.Domain.Entities;
 using OnionArchitectureWebAPI.Persistance.Context;
 using OnionArchitectureWebAPI.Persistance.Repositories;
 using OnionArchitectureWebAPI.Persistance.UnitofWorks;
@@ -24,6 +25,18 @@ namespace OnionArchitectureWebAPI.Persistance
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             services.AddScoped<IUnitofWork, UnitofWork>();
+
+            services.AddIdentityCore<User>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequiredLength = 6;
+                opt.SignIn.RequireConfirmedEmail = false;
+            })
+                .AddRoles<Role>()
+                .AddEntityFrameworkStores<AppDbContext>();
         }
     }
 }
