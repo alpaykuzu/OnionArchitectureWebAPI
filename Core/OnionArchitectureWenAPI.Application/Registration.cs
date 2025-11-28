@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using OnionArchitectureWebAPI.Application.Bases;
@@ -33,6 +34,7 @@ namespace OnionArchitectureWebAPI.Application
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidationBehevior<,>));
 
+            //services.AddAutoMapper(assembly);
         }
 
         private static IServiceCollection AddRulesFromAssemblyContaining(this IServiceCollection services, Assembly assembly, Type type)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OnionArchitectureWebAPI.Application.Features.Products.Exceptions
 {
-    public class ProductTitleMustNotBeSameException : BaseExceptions
+    public class ProductTitleMustNotBeSameException : BaseException
     {
         public ProductTitleMustNotBeSameException() : base("Ürün başlığı başka bir ürün başlığı ile aynı olamaz."){ }
 
