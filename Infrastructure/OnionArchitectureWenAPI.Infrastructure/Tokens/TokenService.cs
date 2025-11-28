@@ -43,7 +43,7 @@ namespace OnionArchitectureWebAPI.Infrastructure.Tokens
                 issuer: _tokenSettings.Issuer,
                 audience: _tokenSettings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(_tokenSettings.TokenValidtyInMinutes),
+                expires: DateTime.Now.ToLocalTime().AddMinutes(_tokenSettings.TokenValidtyInMinutes),
                 signingCredentials: creds
             );
 

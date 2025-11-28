@@ -15,7 +15,21 @@ namespace OnionArchitectureWebAPI.Application.Features.Auth.Rules
         {
             if(user is not null) throw new UserAlreadyExistException();
             return Task.CompletedTask;
-
+        }
+        public Task EmailOrPasswordShouldNotBeWrong(User? user, bool checkPassword)
+        {
+            if (!checkPassword || user is null) throw new EmailOrPasswordWrongException();
+            return Task.CompletedTask;
+        }
+        public Task RefreshTokenShouldNotBeExpired(DateTime? expireDate)
+        {
+            if (expireDate < DateTime.Now.ToLocalTime() || expireDate is null) throw new RefreshTokenExpiredException();
+            return Task.CompletedTask;
+        }
+        public Task UserShouldExistWhenRequested(User? user)
+        {
+            if (user is null) throw new UserNotFoundException();
+            return Task.CompletedTask;
         }
     }
 }
