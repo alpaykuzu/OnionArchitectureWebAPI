@@ -47,19 +47,16 @@ namespace OnionArchitectureWebAPI.Mapper.AutoMapper
 
             var config = new MapperConfiguration(cfg =>
             {
-                // Extension metodları tarama (Hata önleyici)
                 cfg.ShouldMapMethod = (m => false);
 
                 // Ana Mappleme
                 var map = cfg.CreateMap(sourceType, destinationType)
-                             .MaxDepth(5) // Döngüsel referans koruması
+                             .MaxDepth(5) 
                              .ReverseMap();
 
                 if (!string.IsNullOrEmpty(ignore))
                     map.ForMember(ignore, opt => opt.Ignore());
 
-                // --- AKILLI TARAMA BAŞLANGICI ---
-                // İçerideki sınıfları (Brand -> BrandDto gibi) otomatik bul ve ekle
                 AddSubMaps(cfg, sourceType, destinationType);
             });
 
@@ -69,10 +66,9 @@ namespace OnionArchitectureWebAPI.Mapper.AutoMapper
             return newMapper;
         }
 
-        // Alt nesneleri (Property'leri) tarayıp onlar için de CreateMap oluşturan metot
         private void AddSubMaps(IMapperConfigurationExpression cfg, Type sourceType, Type destinationType, int depth = 0)
         {
-            if (depth > 3) return; // Sonsuz döngüye girmemesi için limit
+            if (depth > 3) return; 
 
             var sourceProps = sourceType.GetProperties();
             var destProps = destinationType.GetProperties();
@@ -85,7 +81,6 @@ namespace OnionArchitectureWebAPI.Mapper.AutoMapper
                 var sType = sourceProp.PropertyType;
                 var dType = destProp.PropertyType;
 
-                // Eğer property bir Liste ise (IList<BrandDto>) içindeki tipi bul
                 if (typeof(IEnumerable).IsAssignableFrom(sType) && sType != typeof(string))
                 {
                     if (sType.IsGenericType && dType.IsGenericType)
@@ -95,15 +90,11 @@ namespace OnionArchitectureWebAPI.Mapper.AutoMapper
                     }
                 }
 
-                // Eğer Property'ler Class ise ve System tipi değilse (string, int vs değilse)
-                // Bu Brand ve BrandDto demektir.
                 if (sType.IsClass && dType.IsClass &&
                     sType != typeof(string) && dType != typeof(string))
                 {
-                    // Alt nesne için harita oluştur
                     cfg.CreateMap(sType, dType).MaxDepth(5).ReverseMap();
 
-                    // Recursive: Alt nesnenin de altı varsa ona da bak (Örn: Brand -> Country)
                     AddSubMaps(cfg, sType, dType, depth + 1);
                 }
             }
