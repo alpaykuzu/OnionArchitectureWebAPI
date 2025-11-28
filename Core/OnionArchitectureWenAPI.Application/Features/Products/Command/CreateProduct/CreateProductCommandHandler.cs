@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using OnionArchitectureWebAPI.Application.Bases;
 using OnionArchitectureWebAPI.Application.Features.Products.Rules;
 using OnionArchitectureWebAPI.Application.Interfaces.AutoMapper;
 using OnionArchitectureWebAPI.Application.Interfaces.UnitofWorks;
@@ -11,35 +13,31 @@ using System.Threading.Tasks;
 
 namespace OnionArchitectureWebAPI.Application.Features.Products.Command.CreateProduct
 {
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, Unit>
+    public class CreateProductCommandHandler : BaseHandler, IRequestHandler<CreateProductCommandRequest, Unit>
     {
-        private readonly IUnitofWork _unitOfWork;
-        private readonly IMapper _mapper;
         private readonly ProductRules _productRules;
 
-        public CreateProductCommandHandler(IUnitofWork unitOfWork, IMapper mapper, ProductRules productRules)
+        public CreateProductCommandHandler(ProductRules productRules, IMapper mapper, IUnitofWork unitofWork, IHttpContextAccessor httpContextAccessor) : base(mapper, unitofWork, httpContextAccessor) 
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
             _productRules = productRules;
         }
 
         public async Task<Unit> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            var existingProducts = await _unitOfWork.GetReadRepository<Product>()
+            var existingProducts = await unitOfWork.GetReadRepository<Product>()
                 .GetAllAsync();
             await _productRules.ProductTitleMustNotBeSame(request.Title, existingProducts.Select(p => p.Title).ToList()); 
 
-            var product = _mapper.Map<Product, CreateProductCommandRequest>(request);
-            await _unitOfWork.GetWriteRepository<Product>().AddAsync(product);
-            var result =  await _unitOfWork.SaveChangesAsync();
+            var product = mapper.Map<Product>(request);
+            await unitOfWork.GetWriteRepository<Product>().AddAsync(product);
+            var result =  await unitOfWork.SaveChangesAsync();
             if(result > 0)
             {
                 foreach (var categoryId in request.CategoryIds)
                 {
-                    await _unitOfWork.GetWriteRepository<ProductCategory>().AddAsync(new () { ProductId = product.Id, CategoryId = categoryId });
+                    await unitOfWork.GetWriteRepository<ProductCategory>().AddAsync(new () { ProductId = product.Id, CategoryId = categoryId });
                 }
-                await _unitOfWork.SaveChangesAsync();
+                await unitOfWork.SaveChangesAsync();
             }
             return Unit.Value;
         }

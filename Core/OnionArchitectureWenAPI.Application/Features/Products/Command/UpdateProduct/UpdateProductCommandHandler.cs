@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using OnionArchitectureWebAPI.Application.Bases;
 using OnionArchitectureWebAPI.Application.Interfaces.AutoMapper;
 using OnionArchitectureWebAPI.Application.Interfaces.UnitofWorks;
 using OnionArchitectureWebAPI.Domain.Entities;
@@ -10,32 +12,26 @@ using System.Threading.Tasks;
 
 namespace OnionArchitectureWebAPI.Application.Features.Products.Command.UpdateProduct
 {
-    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandRequest, Unit>
+    public class UpdateProductCommandHandler : BaseHandler, IRequestHandler<UpdateProductCommandRequest, Unit>
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitofWork _unitOfWork;
+        public UpdateProductCommandHandler(IMapper mapper, IUnitofWork unitofWork, IHttpContextAccessor httpContextAccessor) : base(mapper, unitofWork, httpContextAccessor) { }
 
-        public UpdateProductCommandHandler(IMapper mapper, IUnitofWork unitOfWork)
-        {
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
-        }
 
         public async Task<Unit> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            var product = await _unitOfWork.GetReadRepository<Product>().GetAsync(x => x.Id ==  request.Id && !x.IsDeleted);
-            product = _mapper.Map<Product, UpdateProductCommandRequest>(request);
+            var product = await unitOfWork.GetReadRepository<Product>().GetAsync(x => x.Id ==  request.Id && !x.IsDeleted);
+            product = mapper.Map<Product>(request);
 
-            var productCategories = await _unitOfWork.GetReadRepository<ProductCategory>().GetAllAsync(x => x.ProductId == product.Id);
-            await _unitOfWork.GetWriteRepository<ProductCategory>().HardDeleteRangeAsync(productCategories);
+            var productCategories = await unitOfWork.GetReadRepository<ProductCategory>().GetAllAsync(x => x.ProductId == product.Id);
+            await unitOfWork.GetWriteRepository<ProductCategory>().HardDeleteRangeAsync(productCategories);
 
             foreach (var categoryID in request.CategoryIds)
             {
-                await _unitOfWork.GetWriteRepository<ProductCategory>().AddAsync(new() { ProductId = product.Id, CategoryId = categoryID });
+                await unitOfWork.GetWriteRepository<ProductCategory>().AddAsync(new() { ProductId = product.Id, CategoryId = categoryID });
             }
 
-            await _unitOfWork.GetWriteRepository<Product>().UpdateAsync(product);
-            await _unitOfWork.SaveChangesAsync();
+            await unitOfWork.GetWriteRepository<Product>().UpdateAsync(product);
+            await unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }

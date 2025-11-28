@@ -1,4 +1,7 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using OnionArchitectureWebAPI.Application.Bases;
+using OnionArchitectureWebAPI.Application.Interfaces.AutoMapper;
 using OnionArchitectureWebAPI.Application.Interfaces.UnitofWorks;
 using OnionArchitectureWebAPI.Domain.Entities;
 using System;
@@ -9,20 +12,17 @@ using System.Threading.Tasks;
 
 namespace OnionArchitectureWebAPI.Application.Features.Products.Command.DeleteProduct
 {
-    public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommandRequest, Unit>
+    public class DeleteProductCommandHandler : BaseHandler, IRequestHandler<DeleteProductCommandRequest, Unit>
     {
-        private readonly IUnitofWork _unitOfWork;
-        public DeleteProductCommandHandler(IUnitofWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        public DeleteProductCommandHandler(IMapper mapper, IUnitofWork unitofWork, IHttpContextAccessor httpContextAccessor) : base(mapper, unitofWork, httpContextAccessor) { }
+
 
         public async Task<Unit> Handle(DeleteProductCommandRequest request, CancellationToken cancellationToken)
         {
-            var product = await _unitOfWork.GetReadRepository<Product>().GetAsync(x => x.Id == request.Id && !x.IsDeleted);
+            var product = await unitOfWork.GetReadRepository<Product>().GetAsync(x => x.Id == request.Id && !x.IsDeleted);
             product.IsDeleted = true;
-            await _unitOfWork.GetWriteRepository<Product>().UpdateAsync(product);
-            await _unitOfWork.SaveChangesAsync();
+            await unitOfWork.GetWriteRepository<Product>().UpdateAsync(product);
+            await unitOfWork.SaveChangesAsync();
 
             return Unit.Value;
         }
