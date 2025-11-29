@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using OnionArchitectureWebAPI.Application.Interfaces.RedisCache;
 using OnionArchitectureWebAPI.Application.Interfaces.Tokens;
+using OnionArchitectureWebAPI.Infrastructure.RedisCache;
 using OnionArchitectureWebAPI.Infrastructure.Tokens;
 
 
@@ -32,6 +34,16 @@ namespace OnionArchitectureWebAPI.Infrastructure
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"])),
                     ClockSkew = TimeSpan.Zero
                 };
+            });
+
+            // Redis
+            services.Configure<RedisCacheSettings>(configuration.GetSection("RedisCacheSettings"));
+            services.AddTransient<IRedisCacheService, RedisCacheService>();
+
+            services.AddStackExchangeRedisCache(opt =>
+            {
+                opt.Configuration = configuration["RedisCacheSettings:ConnectionString"];
+                opt.InstanceName = configuration["RedisCacheSettings:InstanceName"];
             });
         }
     }
