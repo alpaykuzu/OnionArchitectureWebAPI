@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OnionArchitectureWebAPI.Application.Features.Brands.Command.CreateBrand;
 using OnionArchitectureWebAPI.Application.Features.Products.Command.CreateProduct;
 using OnionArchitectureWebAPI.Application.Features.Products.Command.DeleteProduct;
 using OnionArchitectureWebAPI.Application.Features.Products.Command.UpdateProduct;
